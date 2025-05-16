@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Item Checklist</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DF Tracker</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 20px;
-      background: #fff;
+      padding: 1rem;
     }
     .grid {
       display: grid;
@@ -45,6 +44,7 @@
     .item-name {
       flex: 1;
       font-weight: 500;
+      transition: all 0.3s ease;
     }
     .item-name.completed {
       text-decoration: line-through;
@@ -79,57 +79,59 @@
   </style>
 </head>
 <body>
+  <h1>DF Tracker</h1>
   <div class="grid" id="checklist"></div>
 
   <script>
     const items = [
-      { group: "COLLECTOR 1", entries: [
-        ["Ahsarah Fashion Weekly", 2],
-        ["Wooden Carved Pipe", 2],
-        ["Intel Document", 5],
-        ["Portable Speakers", 2],
-      ]},
-      { group: "COLLECTOR 2", entries: [
-        ["Artificial Knee Joint", 1],
-        ["Implantable Defibrillator", 1],
-        ["Electron Microscope", 3],
-        ["Centrifuge", 1],
-        ["Blood Pressure Meter", 2],
-      ]},
-      { group: "COLLECTOR 3", entries: [
-        ["Analog Thermometer", 5],
-        ["Military Binoculars", 3],
-        ["Biochemical Incubator", 3],
-        ["Heart Stent", 2],
-        ["Ceremony Dagger", 2],
-      ]},
-      { group: "COLLECTOR 4", entries: [
-        ["Ahsarah Special Lantern", 3],
-        ["Ahsarah Glamour Hookah", 3],
-        ["Ahsarah Specialty Wine Glass", 2],
-        ["Ahsarah Specialty Flask", 3],
-        ["Ahsarah Special Ceramics", 3],
-        ["LEDX", 2],
-      ]},
-      { group: "COLLECTOR 5", entries: [
-        ["Local Specialty Jewelry", 1],
-        ["Encripted Router", 2],
-        ["EV Battery", 2],
-        ["Digital Camera", 2],
-        ["Military Trajectory Computer", 1],
-      ]},
-      { group: "COLLECTOR 6", entries: [
-        ["Smoothbore Gun Exhibit", 1],
-        ["Satalite Phone", 2],
-        ["SLR Camera", 1],
-      ]},
-      { group: "HEADHUNTER", entries: [
-        ["Dog Tags", 12],
-      ]}
+      { group: "COLLECTOR 1", entries: [["Ahsarah Fashion Weekly", 2], ["Wooden Carved Pipe", 2], ["Intel Document", 5], ["Portable Speakers", 2]] },
+      { group: "COLLECTOR 2", entries: [["Artificial Knee Joint", 1], ["Implantable Defibrillator", 1], ["Electron Microscope", 3], ["Centrifuge", 1], ["Blood Pressure Meter", 2]] },
+      { group: "COLLECTOR 3", entries: [["Analog Thermometer", 5], ["Military Binoculars", 3], ["Biochemical Incubator", 3], ["Heart Stent", 2], ["Ceremony Dagger", 2]] },
+      { group: "COLLECTOR 4", entries: [["Ahsarah Special Lantern", 3], ["Ahsarah Glamour Hookah", 3], ["Ahsarah Specialty Wine Glass", 2], ["Ahsarah Specialty Flask", 3], ["Ahsarah Special Ceramics", 3], ["LEDX", 2]] },
+      { group: "COLLECTOR 5", entries: [["Local Specialty Jewelry", 1], ["Encripted Router", 2], ["EV Battery", 2], ["Digital Camera", 2], ["Military Trajectory Computer", 1]] },
+      { group: "COLLECTOR 6", entries: [["Smoothbore Gun Exhibit", 1], ["Satalite Phone", 2], ["SLR Camera", 1]] },
+      { group: "HEADHUNTER", entries: [["Dog Tags", 12]] }
     ];
 
     const checklist = document.getElementById("checklist");
-    const savedData = JSON.parse(localStorage.getItem("checklistData") || "{}");
+
+    function saveValue(id, value) {
+      localStorage.setItem(id, value);
+    }
+
+    function loadValue(id) {
+      return parseInt(localStorage.getItem(id)) || 0;
+    }
+
+    function updateStatus(id, required) {
+      const input = document.getElementById(id);
+      const status = document.getElementById(`${id}-status`);
+      const label = document.getElementById(`${id}-label`);
+      if (!input || !status || !label) return;
+
+      const value = parseInt(input.value) || 0;
+
+      if (value >= required) {
+        status.textContent = "✓";
+        status.className = "complete";
+        label.classList.add("completed");
+      } else {
+        status.textContent = "";
+        status.className = "";
+        label.classList.remove("completed");
+      }
+    }
+
+    function change(id, delta, required) {
+      const input = document.getElementById(id);
+      if (!input) return;
+
+      let value = parseInt(input.value) || 0;
+      value = Math.max(0, value + delta);
+      input.value = value;
+      saveValue(id, value);
+      updateStatus(id, required);
+    }
 
     items.forEach(section => {
       const groupDiv = document.createElement("div");
@@ -142,11 +144,13 @@
 
       section.entries.forEach(([name, required], index) => {
         const id = `${section.group}-${index}`.replace(/\s+/g, '-');
+
         const wrapper = document.createElement("div");
         wrapper.className = "item";
 
         const label = document.createElement("div");
         label.className = "item-name";
+        label.id = `${id}-label`;
         label.textContent = `${name} (x${required})`;
 
         const minus = document.createElement("button");
@@ -158,8 +162,11 @@
         input.id = id;
         input.type = "number";
         input.min = 0;
-        input.value = savedData[id] || 0;
-        input.oninput = () => manualChange(id, required);
+        input.value = loadValue(id);
+        input.onchange = () => {
+          saveValue(id, input.value);
+          updateStatus(id, required);
+        };
 
         const plus = document.createElement("button");
         plus.className = "counter-btn";
@@ -171,52 +178,21 @@
 
         wrapper.append(label, minus, input, plus, status);
         groupDiv.appendChild(wrapper);
-
-        // Update checkmark and style right after adding
-        updateStatus(id, required);
       });
 
       checklist.appendChild(groupDiv);
     });
 
-    function change(id, delta, required) {
-      const input = document.getElementById(id);
-      let value = parseInt(input.value) || 0;
-      value = Math.max(0, value + delta);
-      input.value = value;
-      saveValue(id, value);
-      updateStatus(id, required);
-    }
-
-    function manualChange(id, required) {
-      const input = document.getElementById(id);
-      const value = parseInt(input.value) || 0;
-      saveValue(id, value);
-      updateStatus(id, required);
-    }
-
-    function updateStatus(id, required) {
-      const input = document.getElementById(id);
-      const status = document.getElementById(`${id}-status`);
-      const value = parseInt(input.value) || 0;
-
-      const itemName = input.parentElement.querySelector(".item-name");
-
-      if (value >= required) {
-        status.textContent = "✓";
-        status.className = "complete";
-        itemName.classList.add("completed");
-      } else {
-        status.textContent = "";
-        status.className = "";
-        itemName.classList.remove("completed");
-      }
-    }
-
-    function saveValue(id, value) {
-      savedData[id] = value;
-      localStorage.setItem("checklistData", JSON.stringify(savedData));
-    }
+    // On load, update all statuses
+    window.addEventListener("DOMContentLoaded", () => {
+      items.forEach(section => {
+        section.entries.forEach((_, index) => {
+          const id = `${section.group}-${index}`.replace(/\s+/g, '-');
+          const required = section.entries[index][1];
+          updateStatus(id, required);
+        });
+      });
+    });
   </script>
 </body>
 </html>
