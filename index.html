@@ -8,6 +8,10 @@
     body {
       font-family: Arial, sans-serif;
       padding: 1rem;
+      background-color: #f24444; /* updated background color */
+      margin: 0;
+      min-height: 100vh;
+      color: white; /* changed text color for better contrast */
     }
     .grid {
       display: grid;
@@ -19,6 +23,7 @@
       border: 2px solid #fca5a5;
       border-radius: 8px;
       padding: 12px;
+      color: #000; /* override text color inside groups for readability */
     }
     .group-title {
       background: #b91c1c;
@@ -40,6 +45,7 @@
       margin-top: 6px;
       border-radius: 6px;
       border: 1px solid #fecaca;
+      color: #000;
     }
     .item-name {
       flex: 1;
@@ -70,11 +76,17 @@
       border-radius: 4px;
       border: 1px solid #f87171;
       background: white;
+      color: #000;
     }
     .complete {
       color: #16a34a;
       font-weight: bold;
       margin-left: 8px;
+    }
+    h1 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      text-align: center;
     }
   </style>
 </head>
