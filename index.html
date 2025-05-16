@@ -1,233 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Checklist</title>
-<style>
-  /* Your CSS here */
-  body {
-    font-family: Arial, sans-serif;
-  }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 20px;
-  }
-  .group {
-    background: #fee2e2;
-    border: 2px solid #fca5a5;
-    border-radius: 8px;
-    padding: 12px;
-  }
-  .group-title {
-    background: #b91c1c;
-    color: white;
-    padding: 6px 10px;
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    text-align: center;
-  }
-  .item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    background: #fef2f2;
-    padding: 8px;
-    margin-top: 6px;
-    border-radius: 6px;
-    border: 1px solid #fecaca;
-  }
-  .item-name {
-    flex: 1;
-    font-weight: 500;
-  }
-  .counter-btn {
-    padding: 6px 10px;
-    background: #fca5a5;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background 0.2s;
-  }
-  .counter-btn:hover {
-    background: #f87171;
-  }
-  input[type=number] {
-    width: 50px;
-    text-align: center;
-    padding: 4px;
-    font-size: 1rem;
-    border-radius: 4px;
-    border: 1px solid #f87171;
-    background: white;
-  }
-  .complete {
-    color: #16a34a;
-    font-weight: bold;
-    margin-left: 8px;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checklist Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #fff;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+    .group {
+      background: #fee2e2;
+      border: 2px solid #fca5a5;
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .group-title {
+      background: #b91c1c;
+      color: white;
+      padding: 6px 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: #fef2f2;
+      padding: 8px;
+      margin-top: 6px;
+      border-radius: 6px;
+      border: 1px solid #fecaca;
+    }
+    .item-name {
+      flex: 1;
+      font-weight: 500;
+    }
+    .counter-btn {
+      padding: 6px 10px;
+      background: #fca5a5;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+    .counter-btn:hover {
+      background: #f87171;
+    }
+    input[type=number] {
+      width: 50px;
+      text-align: center;
+      padding: 4px;
+      font-size: 1rem;
+      border-radius: 4px;
+      border: 1px solid #f87171;
+      background: white;
+    }
+    .complete {
+      color: #16a34a;
+      font-weight: bold;
+      margin-left: 8px;
+    }
+  </style>
 </head>
 <body>
   <div class="grid" id="checklist"></div>
 
-<script>
-window.onload = () => {
-  const items = [
-    { group: "COLLECTOR 1", entries: [
-      ["Ahsarah Fashion Weekly", 2],
-      ["Wooden Carved Pipe", 2],
-      ["Intel Document", 5],
-      ["Portable Speakers", 2],
-    ]},
-    { group: "COLLECTOR 2", entries: [
-      ["Artificial Knee Joint", 1],
-      ["Implantable Defibrillator", 1],
-      ["Electron Microscope", 3],
-      ["Centrifuge", 1],
-      ["Blood Pressure Meter", 2],
-    ]},
-    { group: "COLLECTOR 3", entries: [
-      ["Analog Thermometer", 5],
-      ["Military Binoculars", 3],
-      ["Biochemical Incubator", 3],
-      ["Heart Stent", 2],
-      ["Ceremony Dagger", 2],
-    ]},
-    { group: "COLLECTOR 4", entries: [
-      ["Ahsarah Special Lantern", 3],
-      ["Ahsarah Glamour Hookah", 3],
-      ["Ahsarah Specialty Wine Glass", 2],
-      ["Ahsarah Specialty Flask", 3],
-      ["Ahsarah Special Ceramics", 3],
-      ["LEDX", 2],
-    ]},
-    { group: "COLLECTOR 5", entries: [
-      ["Local Specialty Jewelry", 1],
-      ["Encripted Router", 2],
-      ["EV Battery", 2],
-      ["Digital Camera", 2],
-      ["Military Trajectory Computer", 1],
-    ]},
-    { group: "COLLECTOR 6", entries: [
-      ["Smoothbore Gun Exhibit", 1],
-      ["Satalite Phone", 2],
-      ["SLR Camera", 1],
-    ]},
-    { group: "HEADHUNTER", entries: [
-      ["Dog Tags", 12],
-    ]}
-  ];
+  <script>
+    const items = [
+      { group: "COLLECTOR 1", entries: [
+        ["Ahsarah Fashion Weekly", 2],
+        ["Wooden Carved Pipe", 2],
+        ["Intel Document", 5],
+        ["Portable Speakers", 2],
+      ]},
+      { group: "COLLECTOR 2", entries: [
+        ["Artificial Knee Joint", 1],
+        ["Implantable Defibrillator", 1],
+        ["Electron Microscope", 3],
+        ["Centrifuge", 1],
+        ["Blood Pressure Meter", 2],
+      ]},
+      { group: "COLLECTOR 3", entries: [
+        ["Analog Thermometer", 5],
+        ["Military Binoculars", 3],
+        ["Biochemical Incubator", 3],
+        ["Heart Stent", 2],
+        ["Ceremony Dagger", 2],
+      ]},
+      { group: "COLLECTOR 4", entries: [
+        ["Ahsarah Special Lantern", 3],
+        ["Ahsarah Glamour Hookah", 3],
+        ["Ahsarah Specialty Wine Glass", 2],
+        ["Ahsarah Specialty Flask", 3],
+        ["Ahsarah Special Ceramics", 3],
+        ["LEDX", 2],
+      ]},
+      { group: "COLLECTOR 5", entries: [
+        ["Local Specialty Jewelry", 1],
+        ["Encripted Router", 2],
+        ["EV Battery", 2],
+        ["Digital Camera", 2],
+        ["Military Trajectory Computer", 1],
+      ]},
+      { group: "COLLECTOR 6", entries: [
+        ["Smoothbore Gun Exhibit", 1],
+        ["Satalite Phone", 2],
+        ["SLR Camera", 1],
+      ]},
+      { group: "HEADHUNTER", entries: [
+        ["Dog Tags", 12],
+      ]}
+    ];
 
-  const checklist = document.getElementById("checklist");
+    const checklist = document.getElementById("checklist");
 
-  const savedData = JSON.parse(localStorage.getItem('checklistCounts') || '{}');
+    const savedData = JSON.parse(localStorage.getItem("checklistData") || "{}");
 
-  items.forEach(section => {
-    const groupDiv = document.createElement("div");
-    groupDiv.className = "group";
+    items.forEach(section => {
+      const groupDiv = document.createElement("div");
+      groupDiv.className = "group";
 
-    const title = document.createElement("div");
-    title.className = "group-title";
-    title.textContent = section.group;
-    groupDiv.appendChild(title);
+      const title = document.createElement("div");
+      title.className = "group-title";
+      title.textContent = section.group;
+      groupDiv.appendChild(title);
 
-    section.entries.forEach(([name, required], index) => {
-      const id = `${section.group}-${index}`.replace(/\s+/g, '-');
-      const wrapper = document.createElement("div");
-      wrapper.className = "item";
+      section.entries.forEach(([name, required], index) => {
+        const id = `${section.group}-${index}`.replace(/\s+/g, '-');
+        const wrapper = document.createElement("div");
+        wrapper.className = "item";
 
-      const label = document.createElement("div");
-      label.className = "item-name";
-      label.textContent = `${name} (x${required})`;
+        const label = document.createElement("div");
+        label.className = "item-name";
+        label.textContent = `${name} (x${required})`;
 
-      const minus = document.createElement("button");
-      minus.className = "counter-btn";
-      minus.textContent = "−";
-      minus.onclick = () => change(id, -1, required);
+        const minus = document.createElement("button");
+        minus.className = "counter-btn";
+        minus.textContent = "−";
+        minus.onclick = () => change(id, -1, required);
 
-      const input = document.createElement("input");
-      input.id = id;
-      input.type = "number";
-      input.min = 0;
-      input.value = savedData[id] || 0;
-      input.oninput = () => manualChange(id, required);
-      updateStatus(id, required);
-      
-      const plus = document.createElement("button");
-      plus.className = "counter-btn";
-      plus.textContent = "+";
-      plus.onclick = () => change(id, 1, required);
+        const input = document.createElement("input");
+        input.id = id;
+        input.type = "number";
+        input.min = 0;
+        input.value = savedData[id] || 0;
+        input.oninput = () => manualChange(id, required);
 
-      const status = document.createElement("span");
-      status.id = `${id}-status`;
+        const plus = document.createElement("button");
+        plus.className = "counter-btn";
+        plus.textContent = "+";
+        plus.onclick = () => change(id, 1, required);
 
-      wrapper.append(label, minus, input, plus, status);
-      groupDiv.appendChild(wrapper);
+        const status = document.createElement("span");
+        status.id = `${id}-status`;
 
-      updateStatus(id, required);
+        wrapper.append(label, minus, input, plus, status);
+        groupDiv.appendChild(wrapper);
+      });
+
+      checklist.appendChild(groupDiv);
     });
 
-    checklist.appendChild(groupDiv);
-  });
-
-  function change(id, delta, required) {
-    const input = document.getElementById(id);
-    if (!input) return;
-
-    let value = parseInt(input.value) || 0;
-    value = Math.max(0, value + delta);
-    input.value = value;
-
-    updateStatus(id, required);
-    saveData();
-  }
-
-  function manualChange(id, required) {
-    const input = document.getElementById(id);
-    if (!input) return;
-
-    let value = parseInt(input.value) || 0;
-    if (value < 0) {
-      value = 0;
-      input.value = 0;
-    }
-    updateStatus(id, required);
-    saveData();
-  }
-
-  function updateStatus(id, required) {
-    const input = document.getElementById(id);
-    const status = document.getElementById(`${id}-status`);
-    if (!input || !status) return;
-
-    const value = parseInt(input.value) || 0;
-    if (value >= required) {
-      status.textContent = "✓";
-      status.className = "complete";
-    } else {
-      status.textContent = "";
-      status.className = "";
-    }
-  }
-
-  function saveData() {
-    const counts = {};
+    // Run status update AFTER all elements are rendered
     items.forEach(section => {
-      section.entries.forEach((_, index) => {
+      section.entries.forEach(([, required], index) => {
         const id = `${section.group}-${index}`.replace(/\s+/g, '-');
-        const input = document.getElementById(id);
-        counts[id] = parseInt(input.value) || 0;
+        updateStatus(id, required);
       });
     });
-    localStorage.setItem('checklistCounts', JSON.stringify(counts));
-  }
-};
-</script>
+
+    function change(id, delta, required) {
+      const input = document.getElementById(id);
+      let value = parseInt(input.value) || 0;
+      value = Math.max(0, value + delta);
+      input.value = value;
+      saveValue(id, value);
+      updateStatus(id, required);
+    }
+
+    function manualChange(id, required) {
+      const input = document.getElementById(id);
+      const value = parseInt(input.value) || 0;
+      saveValue(id, value);
+      updateStatus(id, required);
+    }
+
+    function updateStatus(id, required) {
+      const input = document.getElementById(id);
+      const status = document.getElementById(`${id}-status`);
+      const value = parseInt(input.value) || 0;
+
+      if (value >= required) {
+        status.textContent = "✓";
+        status.className = "complete";
+      } else {
+        status.textContent = "";
+        status.className = "";
+      }
+    }
+
+    function saveValue(id, value) {
+      savedData[id] = value;
+      localStorage.setItem("checklistData", JSON.stringify(savedData));
+    }
+  </script>
 </body>
 </html>
