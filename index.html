@@ -157,7 +157,8 @@ window.onload = () => {
       input.min = 0;
       input.value = savedData[id] || 0;
       input.oninput = () => manualChange(id, required);
-
+      updateStatus(id, required);
+      
       const plus = document.createElement("button");
       plus.className = "counter-btn";
       plus.textContent = "+";
