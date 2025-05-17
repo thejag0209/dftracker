@@ -45,6 +45,11 @@
       margin-top: 6px;
       border-radius: 6px;
       border: 1px solid #fecaca;
+      transition: background-color 0.3s;
+    }
+
+    .item.completed {
+      background-color: #d1d5db !important;
     }
 
     .rarity-box {
@@ -62,9 +67,9 @@
       gap: 8px;
     }
 
-    .complete-text {
+    .item-name.completed-text {
       text-decoration: line-through;
-      opacity: 0.7;
+      color: #6b7280;
     }
 
     .counter-btn {
@@ -195,7 +200,7 @@
         const wrapper = document.createElement("div");
         wrapper.className = "item";
 
-        const color = rarities[name] || "#9ca3af"; // default grey
+        const color = rarities[name] || "#9ca3af";
 
         const rarityBox = document.createElement("div");
         rarityBox.className = "rarity-box";
@@ -228,10 +233,9 @@
         wrapper.append(label, minus, input, plus, status);
         groupDiv.appendChild(wrapper);
 
+        checklist.appendChild(groupDiv);
         updateStatus(id, required);
       });
-
-      checklist.appendChild(groupDiv);
     });
 
     function change(id, delta, required) {
@@ -248,19 +252,24 @@
     function updateStatus(id, required) {
       const input = document.getElementById(id);
       const status = document.getElementById(`${id}-status`);
-      const label = input?.parentElement?.querySelector('.item-name > span');
+      const wrapper = input?.closest(".item");
+      const label = wrapper?.querySelector(".item-name");
 
-      if (!input || !status || !label) return;
+      if (!input || !status || !label || !wrapper) return;
 
       const value = parseInt(input.value) || 0;
-      if (value >= required) {
+      const isComplete = value >= required;
+
+      if (isComplete) {
         status.textContent = "✓";
         status.className = "complete";
-        label.classList.add("complete-text");
+        label.classList.add("completed-text");
+        wrapper.classList.add("completed");
       } else {
         status.textContent = "";
         status.className = "";
-        label.classList.remove("complete-text");
+        label.classList.remove("completed-text");
+        wrapper.classList.remove("completed");
       }
     }
   </script>
