@@ -8,10 +8,10 @@
     body {
       font-family: Arial, sans-serif;
       padding: 1rem;
-      background-color: #f24444; /* updated background color */
+      background-color: #f24444;
       margin: 0;
       min-height: 100vh;
-      color: white; /* changed text color for better contrast */
+      color: white;
     }
     .grid {
       display: grid;
@@ -23,7 +23,7 @@
       border: 2px solid #fca5a5;
       border-radius: 8px;
       padding: 12px;
-      color: #000; /* override text color inside groups for readability */
+      color: #000;
     }
     .group-title {
       background: #b91c1c;
@@ -50,11 +50,19 @@
     .item-name {
       flex: 1;
       font-weight: 500;
-      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     .item-name.completed {
       text-decoration: line-through;
       color: #16a34a;
+    }
+    .rarity-box {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      flex-shrink: 0;
     }
     .counter-btn {
       padding: 6px 10px;
@@ -95,6 +103,47 @@
   <div class="grid" id="checklist"></div>
 
   <script>
+    const rarityColors = {
+      "Common": "#9ca3af",
+      "Uncommon": "#10b981",
+      "Rare": "#3b82f6",
+      "Epic": "#8b5cf6",
+      "Legendary": "#f59e0b"
+    };
+
+    // Replace with actual rarity mappings from your spreadsheet
+    const itemRarities = {
+      "Ahsarah Fashion Weekly": "Uncommon",
+      "Wooden Carved Pipe": "Uncommon",
+      "Intel Document": "Rare",
+      "Portable Speakers": "Uncommon",
+      "Artificial Knee Joint": "Rare",
+      "Implantable Defibrillator": "Epic",
+      "Electron Microscope": "Rare",
+      "Centrifuge": "Rare",
+      "Blood Pressure Meter": "Uncommon",
+      "Analog Thermometer": "Common",
+      "Military Binoculars": "Uncommon",
+      "Biochemical Incubator": "Epic",
+      "Heart Stent": "Rare",
+      "Ceremony Dagger": "Epic",
+      "Ahsarah Special Lantern": "Epic",
+      "Ahsarah Glamour Hookah": "Epic",
+      "Ahsarah Specialty Wine Glass": "Epic",
+      "Ahsarah Specialty Flask": "Epic",
+      "Ahsarah Special Ceramics": "Epic",
+      "LEDX": "Legendary",
+      "Local Specialty Jewelry": "Rare",
+      "Encripted Router": "Rare",
+      "EV Battery": "Epic",
+      "Digital Camera": "Rare",
+      "Military Trajectory Computer": "Epic",
+      "Smoothbore Gun Exhibit": "Legendary",
+      "Satalite Phone": "Epic",
+      "SLR Camera": "Rare",
+      "Dog Tags": "Common"
+    };
+
     const items = [
       { group: "COLLECTOR 1", entries: [["Ahsarah Fashion Weekly", 2], ["Wooden Carved Pipe", 2], ["Intel Document", 5], ["Portable Speakers", 2]] },
       { group: "COLLECTOR 2", entries: [["Artificial Knee Joint", 1], ["Implantable Defibrillator", 1], ["Electron Microscope", 3], ["Centrifuge", 1], ["Blood Pressure Meter", 2]] },
@@ -163,7 +212,14 @@
         const label = document.createElement("div");
         label.className = "item-name";
         label.id = `${id}-label`;
-        label.textContent = `${name} (x${required})`;
+
+        const rarity = itemRarities[name] || "Common";
+        const box = document.createElement("span");
+        box.className = "rarity-box";
+        box.style.backgroundColor = rarityColors[rarity];
+
+        label.appendChild(box);
+        label.appendChild(document.createTextNode(` ${name} (x${required})`));
 
         const minus = document.createElement("button");
         minus.className = "counter-btn";
@@ -195,7 +251,6 @@
       checklist.appendChild(groupDiv);
     });
 
-    // On load, update all statuses
     window.addEventListener("DOMContentLoaded", () => {
       items.forEach(section => {
         section.entries.forEach((_, index) => {
