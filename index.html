@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Delta Force Tracker</title>
+  <title>DF Tracker</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -39,24 +39,13 @@
     .item {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 10px;
       background: #fef2f2;
       padding: 8px;
       margin-top: 6px;
       border-radius: 6px;
       border: 1px solid #fecaca;
-      transition: background-color 0.3s;
-    }
-
-    .item.completed {
-      background-color: #d1d5db !important;
-    }
-
-    .rarity-box {
-      width: 12px;
-      height: 12px;
-      border-radius: 2px;
-      flex-shrink: 0;
     }
 
     .item-name {
@@ -64,12 +53,14 @@
       font-weight: 500;
       display: flex;
       align-items: center;
-      gap: 8px;
     }
 
-    .item-name.completed-text {
-      text-decoration: line-through;
-      color: #6b7280;
+    .rarity-box {
+      width: 12px;
+      height: 12px;
+      margin-right: 8px;
+      border-radius: 2px;
+      flex-shrink: 0;
     }
 
     .counter-btn {
@@ -101,41 +92,56 @@
       font-weight: bold;
       margin-left: 8px;
     }
+
+    .completed-text {
+      text-decoration: line-through;
+      color: #6b7280;
+    }
+
+    .rarity-green { background-color: #22c55e; }
+    .rarity-blue { background-color: #3b82f6; }
+    .rarity-purple { background-color: #a855f7; }
+    .rarity-orange { background-color: #f97316; }
+    .rarity-red { background-color: #dc2626; }
   </style>
 </head>
 <body>
   <div class="grid" id="checklist"></div>
 
   <script>
-    const rarities = {
-      "Analog Thermometer": "#10b981",
-      "Ahsarah Special Ceramics": "#10b981",
-      "Ahsarah Fashion Weekly": "#3b82f6",
-      "Wooden Carved Pipe": "#3b82f6",
-      "Intel Document": "#3b82f6",
-      "Dog Tags": "#3b82f6",
-      "Portable Speakers": "#8b5cf6",
-      "Artificial Knee Joint": "#8b5cf6",
-      "Centrifuge": "#8b5cf6",
-      "Blood Pressure Meter": "#8b5cf6",
-      "Biochemical Incubator": "#8b5cf6",
-      "Ceremony Dagger": "#8b5cf6",
-      "Ahsarah Special Lantern": "#8b5cf6",
-      "Ahsarah Glamour Hookah": "#8b5cf6",
-      "Ahsarah Specialty Flask": "#8b5cf6",
-      "Encripted Router": "#8b5cf6",
-      "EV Battery": "#8b5cf6",
-      "Implantable Defibrillator": "#f97316",
-      "Military Binoculars": "#f97316",
-      "Heart Stent": "#f97316",
-      "Ahsarah Specialty Wine Glass": "#f97316",
-      "LEDX": "#f97316",
-      "Local Specialty Jewelry": "#f97316",
-      "Digital Camera": "#f97316",
-      "Military Trajectory Computer": "#f97316",
-      "Satalite Phone": "#f97316",
-      "SLR Camera": "#f97316",
-      "Smoothbore Gun Exhibit": "#dc2626",
+    const rarityMap = {
+      "Analog Thermometer": "green",
+      "Ahsarah Special Ceramics": "green",
+
+      "Ahsarah Fashion Weekly": "blue",
+      "Wooden Carved Pipe": "blue",
+      "Intel Document": "blue",
+      "Dog Tags": "blue",
+
+      "Portable Speakers": "purple",
+      "Artificial Knee Joint": "purple",
+      "Centrifuge": "purple",
+      "Blood Pressure Meter": "purple",
+      "Biochemical Incubator": "purple",
+      "Ceremony Dagger": "purple",
+      "Ahsarah Special Lantern": "purple",
+      "Ahsarah Glamour Hookah": "purple",
+      "Ahsarah Specialty Flask": "purple",
+      "Encripted Router": "purple",
+      "EV Battery": "purple",
+
+      "Implantable Defibrillator": "orange",
+      "Military Binoculars": "orange",
+      "Heart Stent": "orange",
+      "Ahsarah Specialty Wine Glass": "orange",
+      "LEDX": "orange",
+      "Local Specialty Jewelry": "orange",
+      "Digital Camera": "orange",
+      "Military Trajectory Computer": "orange",
+      "Satalite Phone": "orange",
+      "SLR Camera": "orange",
+
+      "Smoothbore Gun Exhibit": "red"
     };
 
     const items = [
@@ -197,19 +203,24 @@
 
       section.entries.forEach(([name, required], index) => {
         const id = `${section.group}-${index}`.replace(/\s+/g, '-');
+        const storedValue = localStorage.getItem(id);
+        const value = storedValue !== null ? parseInt(storedValue) : 0;
+
         const wrapper = document.createElement("div");
         wrapper.className = "item";
 
-        const color = rarities[name] || "#9ca3af";
-
-        const rarityBox = document.createElement("div");
-        rarityBox.className = "rarity-box";
-        rarityBox.style.backgroundColor = color;
-
         const label = document.createElement("div");
         label.className = "item-name";
-        label.innerHTML = `<span>${name} (x${required})</span>`;
-        label.prepend(rarityBox);
+
+        const rarity = rarityMap[name] || "gray";
+        const box = document.createElement("div");
+        box.className = `rarity-box rarity-${rarity}`;
+        label.appendChild(box);
+
+        const labelText = document.createElement("span");
+        labelText.textContent = `${name} (x${required})`;
+        labelText.id = `${id}-label`;
+        label.appendChild(labelText);
 
         const minus = document.createElement("button");
         minus.className = "counter-btn";
@@ -219,8 +230,9 @@
         const input = document.createElement("input");
         input.id = id;
         input.type = "number";
+        input.value = value;
         input.min = 0;
-        input.value = localStorage.getItem(id) || 0;
+        input.onchange = () => save(id, required);
 
         const plus = document.createElement("button");
         plus.className = "counter-btn";
@@ -233,43 +245,47 @@
         wrapper.append(label, minus, input, plus, status);
         groupDiv.appendChild(wrapper);
 
-        checklist.appendChild(groupDiv);
-        updateStatus(id, required);
+        updateStatus(id, value, required);
       });
+
+      checklist.appendChild(groupDiv);
     });
 
     function change(id, delta, required) {
       const input = document.getElementById(id);
       if (!input) return;
-
       let value = parseInt(input.value) || 0;
       value = Math.max(0, value + delta);
       input.value = value;
-      localStorage.setItem(id, value);
-      updateStatus(id, required);
+      save(id, required);
     }
 
-    function updateStatus(id, required) {
+    function save(id, required) {
       const input = document.getElementById(id);
-      const status = document.getElementById(`${id}-status`);
-      const wrapper = input?.closest(".item");
-      const label = wrapper?.querySelector(".item-name");
-
-      if (!input || !status || !label || !wrapper) return;
-
+      if (!input) return;
       const value = parseInt(input.value) || 0;
+      localStorage.setItem(id, value);
+      updateStatus(id, value, required);
+    }
+
+    function updateStatus(id, value, required) {
+      const status = document.getElementById(`${id}-status`);
+      const label = document.getElementById(`${id}-label`);
+      const input = document.getElementById(id);
       const isComplete = value >= required;
+
+      if (!status || !label || !input) return;
 
       if (isComplete) {
         status.textContent = "✓";
         status.className = "complete";
         label.classList.add("completed-text");
-        wrapper.classList.add("completed");
+        input.classList.add("completed-text");
       } else {
         status.textContent = "";
         status.className = "";
         label.classList.remove("completed-text");
-        wrapper.classList.remove("completed");
+        input.classList.remove("completed-text");
       }
     }
   </script>
