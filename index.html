@@ -245,10 +245,11 @@
         wrapper.append(label, minus, input, plus, status);
         groupDiv.appendChild(wrapper);
 
+        checklist.appendChild(groupDiv);
+
+        // ✅ Immediately update visual status after rendering
         updateStatus(id, value, required);
       });
-
-      checklist.appendChild(groupDiv);
     });
 
     function change(id, delta, required) {
