@@ -46,6 +46,12 @@
       margin-top: 6px;
       border-radius: 6px;
       border: 1px solid #fecaca;
+      transition: background 0.3s, opacity 0.3s;
+    }
+
+    .completed-item {
+      background: #d1d5db;
+      opacity: 0.6;
     }
 
     .item-name {
@@ -112,12 +118,10 @@
     const rarityMap = {
       "Analog Thermometer": "green",
       "Ahsarah Special Ceramics": "green",
-
       "Ahsarah Fashion Weekly": "blue",
       "Wooden Carved Pipe": "blue",
       "Intel Document": "blue",
       "Dog Tags": "blue",
-
       "Portable Speakers": "purple",
       "Artificial Knee Joint": "purple",
       "Centrifuge": "purple",
@@ -129,7 +133,6 @@
       "Ahsarah Specialty Flask": "purple",
       "Encripted Router": "purple",
       "EV Battery": "purple",
-
       "Implantable Defibrillator": "orange",
       "Military Binoculars": "orange",
       "Heart Stent": "orange",
@@ -140,7 +143,6 @@
       "Military Trajectory Computer": "orange",
       "Satalite Phone": "orange",
       "SLR Camera": "orange",
-
       "Smoothbore Gun Exhibit": "red"
     };
 
@@ -208,6 +210,7 @@
 
         const wrapper = document.createElement("div");
         wrapper.className = "item";
+        wrapper.id = `${id}-wrapper`;
 
         const label = document.createElement("div");
         label.className = "item-name";
@@ -244,10 +247,8 @@
 
         wrapper.append(label, minus, input, plus, status);
         groupDiv.appendChild(wrapper);
-
         checklist.appendChild(groupDiv);
 
-        // ✅ Immediately update visual status after rendering
         updateStatus(id, value, required);
       });
     });
@@ -273,20 +274,23 @@
       const status = document.getElementById(`${id}-status`);
       const label = document.getElementById(`${id}-label`);
       const input = document.getElementById(id);
+      const wrapper = document.getElementById(`${id}-wrapper`);
       const isComplete = value >= required;
 
-      if (!status || !label || !input) return;
+      if (!status || !label || !input || !wrapper) return;
 
       if (isComplete) {
         status.textContent = "✓";
         status.className = "complete";
         label.classList.add("completed-text");
         input.classList.add("completed-text");
+        wrapper.classList.add("completed-item");
       } else {
         status.textContent = "";
         status.className = "";
         label.classList.remove("completed-text");
         input.classList.remove("completed-text");
+        wrapper.classList.remove("completed-item");
       }
     }
   </script>
